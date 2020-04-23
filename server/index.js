@@ -3,37 +3,45 @@ const express = require('express')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const path = require('path'); 
+const session = require('express-session');
+const cors = require('cors'); 
 require('dotenv').config()
 
 // Creates the express application
 const app = express();
 const port = process.env.PORT;
+// import module `connect-mongo`
+const MongoStore = require('connect-mongo')(session);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/static', express.static(path.join(__dirname,'/images'))); 
 
-//To allow sending of data between frontend and backend
-app.use(function (request, response, next) {
-  response.header("Access-Control-Allow-Origin", "*");
-  response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
+app.use(cors({
+  origin: "http://localhost:3000",
+  credentials: true
+})); 
+
+mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false })
+.then(() => {
+  console.log("Connected to MongoDB"); 
 })
-app.use('/static', express.static(path.join(__dirname,'/images'))); 
+.catch(function(err) {
+  console.log(err);
+})
 
-
-mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true})
-  .then(() => {
-    console.log("Connected to MongoDB"); 
-  })
-  .catch(function(err) {
-    console.log(err);
-  })
-
-// Home route
-app.get('/', function(req, res) {
-    res.send("Head over to http://localhost:9090/populate to populate data"); 
-});
+// use `express-session`` middleware and set its options
+// use `MongoStore` as server-side session storage
+app.use(session({
+  'secret': 'zarap',
+  'cookie': {
+    maxAge : 1000 * 60 * 60 * 24,
+    secure: false
+  },
+  'resave': true,
+  'saveUninitialized': true,
+  store: new MongoStore({mongooseConnection: mongoose.connection})
+}));
 
 const userRouter = require('./routes/userRouter');
 const reviewRouter = require('./routes/reviewsRouter');
@@ -48,6 +56,12 @@ app.use('/restaurants', restaurantRouter);
 // Populates the database tables
 app.use('/populate', populateRouter);
 
+
+app.use(express.static(__dirname + '/public'));
+//Handle single-page application 
+app.get(/.*/, (req, res) => {
+  res.sendFile(__dirname + '/public/index.html'); 
+}); 
 
 // Listening to the port provided
 app.listen(port, function() {

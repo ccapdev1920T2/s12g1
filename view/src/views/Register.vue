@@ -71,6 +71,7 @@
                     </div>
                 </div>
             </div>
+        <loadModal v-show="loading"/>
         <Footer /> 
     </div>
 </template>
@@ -81,6 +82,7 @@ import axios from 'axios';
 import Navbar from '@/components/Navbar.vue';
 import Footer from '@/components/Footer.vue';
 import ImageUpload from '@/components/ImageUpload'; 
+import loadModal from '@/components/loadModal'; 
 import alertModal from '@/components/alertModal';
 import router from '../router'
 
@@ -90,6 +92,7 @@ export default {
         Navbar,
         Footer,
         ImageUpload,
+        loadModal,
         alertModal
     },
     data() {
@@ -107,7 +110,8 @@ export default {
             },
             confirm_password: null,
             profilePictures: "profilePictures",
-            message: "Thanks for registering! We'll bring you back to the home page now!"
+            message: "Thanks for registering! We'll bring you back to the home page now!",
+            loading: false
         }
     },
     methods:{
@@ -135,9 +139,6 @@ export default {
         toggleSubmitButton: function(value) {
             this.submitVisible = value
         },
-        print: function () {
-            console.log(this.user.firstname + " " + this.user.email + " " + this.user.lastname + " " + this.user.homeaddress + " " + this.user.password);
-        },
         validateForm: async function () {
             this.errors = [];
             if(!this.user.firstname) {
@@ -145,6 +146,10 @@ export default {
             }
             if(!this.user.lastname) {
                 this.errors.push('Last name required');
+            }
+            if(this.user.firstname && this.user.lastname) {
+                if(this.user.firstname.length + this.user.lastname.length > 30)
+                    this.errors.push('Full name must be less than 30 characters');
             }
             if(!this.user.email) {
                 this.errors.push('Email required');
@@ -169,6 +174,7 @@ export default {
                 this.errors.push('Profile Picture required');
             }
             if(!this.errors.length) {
+                this.loading = true;
                 this.saveUser();
                 return true;
             }
@@ -189,7 +195,7 @@ export default {
         saveUser: async function() { 
             let app = this;
             this.errors = [];
-            await axios.post("http://localhost:9090/users/addUser", {
+            await axios.post("/users/addUser", {
                 "firstname": app.user.firstname,
                 "lastname": app.user.lastname,
                 "email": app.user.email,
@@ -207,9 +213,11 @@ export default {
                     this.confirm_password = '';
                     this.uploadSection();
                 }
+                this.loading = false;
             })
             .catch(error => {
-                console.log(error);        
+                this.loading = false;
+                throw error;         
             })
             this.setUploadedPics([]); 
         }

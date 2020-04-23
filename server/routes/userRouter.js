@@ -15,6 +15,12 @@ router.get('/', UsersController.get_all_users);
 //Manages login of a user
 router.post('/login', UsersController.login_user);
 
+//Manages login session of a user
+router.post('/login_check', UsersController.login_check);
+
+//Logout a user
+router.post('/logout', UsersController.logout);
+
 //Updates a user's profile
 router.post('/updateUser', UsersController.update_user);
 
