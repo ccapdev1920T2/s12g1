@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/static', express.static(path.join(__dirname,'/images'))); 
 
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: process.env.WEB_URL,
   credentials: true
 })); 
 
