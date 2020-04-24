@@ -88,7 +88,6 @@ exports.upload_profile_pic = (req, res) => {
 exports.edit_review_pictures = (req, res) => {
     //Limit to 5 pictures to save to db 
     let upload = multer({ storage: storage, fileFilter: imageFilter }).array('photos', 5);
-
     upload(req, res, async function(err) {
          // req.files contains information of uploaded file
 
@@ -107,7 +106,7 @@ exports.edit_review_pictures = (req, res) => {
         //Create the picture objects to save to the db  
         let result = req.files
         //Assign the new urls to serve the images
-        result = result.map(obj => (({...obj, path : `images/${req.params.destination}/${obj.filename}`, pictureID: mongoose.Types.ObjectId()})));
+        result = result.map(obj => (({...obj, path : `images/${req.params.destination}/${obj.filename}`, pictureID: mongoose.Types.ObjectId()}))); 
         res.send(result);
     });
 }; 

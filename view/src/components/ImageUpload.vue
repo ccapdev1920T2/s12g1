@@ -54,6 +54,7 @@ import { mapGetters, mapActions, mapMutations} from 'vuex';
 import axios from 'axios';
 import PictureModal from '@/components/PictureModal'; 
 const STATUS_INITIAL = 0, STATUS_SAVING = 1, STATUS_SUCCESS = 2, STATUS_FAILED = 3;
+// const UPLOAD_ROUTE="/pictures/edit-review-pics"; 
 const UPLOAD_ROUTE="https://zarap.herokuapp.com/pictures/edit-review-pics"; 
 export default {
     name: "ImageUpload",
@@ -122,7 +123,7 @@ export default {
             //set the data 
             .then(res => res.data)
             .then(res => res.map(img => Object.assign({}, 
-                img, { url: `https://razap.herokuapp.com/${this.dest}/${img.filename}` })))
+                img, { url: `https://zarap.herokuapp.com/${this.dest}/${img.filename}` })))
             .catch(err => {
               this.uploadError = err;
               this.currentStatus = STATUS_FAILED;
@@ -130,7 +131,7 @@ export default {
       },
       //Calls the server to save the pictures 
       save(formData) {
-        this.currentStatus = STATUS_SAVING;  
+        this.currentStatus = STATUS_SAVING;   
         this.upload(formData)
           .then(x => { 
             let urls = x.map((item) => item.url);  
