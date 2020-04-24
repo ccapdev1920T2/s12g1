@@ -247,9 +247,9 @@ export default {
             }  
         },
          //saves and posts the review of the user
-        saveReview() {
+        async saveReview() {
             this.loading = true; 
-            this.$store.dispatch('addReview', {
+            await this.$store.dispatch('addReview', {
                 review: this.reviewData,
                 rating: this.rating,
                 photos: this.fetchUploadedPics(),

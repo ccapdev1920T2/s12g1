@@ -42,8 +42,10 @@ export default {
         OperatingHourModal
     },
     watch:{
-        $route (){
-            this.getRestByUser(this.$route.params.id);
+        async $route (){
+            this.loading = true; 
+            await this.getRestByUser(this.$route.params.id);
+            this.loading = false; 
         }
     },
     mounted() {
