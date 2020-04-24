@@ -4,26 +4,12 @@ This project creates a database of restaurants wherein users can look up the res
 
 ## Getting Started
 
-1. Clone the repository
-2. Open two terminals inside the project
-    * One inside /view
-    * One inside /server
-
-##### For Server side
-1. Install the packages (`npm i`)
-2. Type `npm run backend`
-3. Open http://localhost:9090/populate
-
-**By this part, database should already been populated**
-
-##### For View side
-1. Install the packages (`npm i`)
-2. Type `npm run serve`
-3. Open http://localhost:3000 
-
-**Remember to keep both terminals opened**
+1. Visit zarap.herokuapp.com
 
 ### Test Cases
+
+** Due to the generally slow performance of the mongoDB Atlas and Heroku App, loading files might take a while (as compared with having a local database)
+
 #### Test Case 1 (Unlogged User)
 1. Once you open the app at http://localhost:3000 , you will be greeted with the landing page. 
 
@@ -103,10 +89,26 @@ This project creates a database of restaurants wherein users can look up the res
 ![alt text][2.4]
 
 5. From the landing page, search for a restaurant in the search bar, then select that restaurant (in this case, starbucks was looked up)
-As per implementation, search results are based on matching AT LEAST 40% of the WHOLE RESTURANT NAME
-** Filtering of results has yet to be implemented **
+As per implementation, search results are based on matching AT LEAST 3 characters 
 
 ![alt text][2.5]
+
+5.1 For filtering and sorting, click search on the navbar without searching for anything, all restaurants in the database will be shown in the resutls. 
+
+    *Conditions of filter 
+        *Sorts - Only one at a time 
+        *Establishment Type - One at a time 
+        *Cuisine - Multiple (AND i.e. display only restaurants that matched all cuisines toggled) 
+        *City - Multiple (OR i.e. display restaurants that match at least one of the cities toggled)
+        *Cost Range - One at a time
+
+    *Set sort Low to High
+    *Filter Location to Makati City
+    *Filter Cost to 700 - 1400
+
+    *Resuls will show Mad Mark's Creamery and Yabu, sorted as it should
+
+![alt text][2.5.1]
 
 6. Arriving in the restaurant page, you can check the menu, photos, and reviews of that restaurant
   * You can toggle the beenHere* button if you want it saved for your dining history (no need to make a review)
@@ -196,6 +198,7 @@ As per implementation, search results are based on matching AT LEAST 40% of the 
 [2.3]: server/images/Test_Cases_Pcitures/2.3.png 
 [2.4]: server/images/Test_Cases_Pcitures/2.4.png 
 [2.5]: server/images/Test_Cases_Pcitures/2.5.png 
+[2.5.1]: server/images/Test_Cases_Pcitures/2.5.1.png 
 [2.6]: server/images/Test_Cases_Pcitures/2.6.png 
 [2.7]: server/images/Test_Cases_Pcitures/2.7.png 
 [2.8]: server/images/Test_Cases_Pcitures/2.8.png 

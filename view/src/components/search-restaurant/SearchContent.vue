@@ -124,6 +124,7 @@ export default {
     }
 
     .main-content {
+        overflow-y:scroll;
         display:flex;
         padding-right: 3%;
         justify-content: center;
