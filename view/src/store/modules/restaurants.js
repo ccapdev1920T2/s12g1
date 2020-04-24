@@ -259,7 +259,7 @@ const mutations = {
         //Filter by cuisine 
         if(state.filters.cuisines.length != 0)
             filtered = filtered.filter(restaurant => {
-                return state.filters.cuisines.every(cuisine => restaurant.cuisines.includes(cuisine))
+                return state.filters.cuisines.every(cuisine => restaurant.cuisines[0].includes(cuisine))
             })
         //Filter by cost 
         if(state.filters.costFilter) { //If there was a filter set

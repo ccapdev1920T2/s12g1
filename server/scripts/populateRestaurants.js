@@ -124,7 +124,7 @@ var restaurantCuisines = [
     "Chinese",
     "Seafood, Chinese",
     "Coffee, Desserts",
-    "Taiwanese, Chinese",
+    "Chinese",
     "Japanese",
     "Chinese",
     "American",
@@ -135,11 +135,11 @@ var restaurantCuisines = [
     "Korean, Korean BBQ",
     "Filipino",
     "Coffee, Desserts",
-    "Japanese, Sushi",
-    "Japanese, Grill",
+    "Japanese",
+    "Japanese",
     "Japanese",
     "American",
-    "Seafood, Filipino, Asian, European",
+    "Seafood, Filipino, Asian",
     "Pizza"
 ]
 
