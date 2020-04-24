@@ -123,7 +123,7 @@ export default {
             //set the data 
             .then(res => res.data)
             .then(res => res.map(img => Object.assign({}, 
-                img, { url: `https://zarap.herokuapp.com/${this.dest}/${img.filename}` })))
+                img, { url: `https://zarap.herokuapp.com/static/${this.dest}/${img.filename}` })))
             .catch(err => {
               this.uploadError = err;
               this.currentStatus = STATUS_FAILED;
