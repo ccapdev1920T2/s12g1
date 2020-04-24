@@ -22,8 +22,10 @@
             <div class="restaurantCards" v-if="!loading && result">
                 <RestaurantCard v-on:did_click_operating_info = "displayOperatingHoursModal" v-for="item in this.fetchAllSearchRestos()" :key="item.restaurantID" :resto="item"/>
             </div>
-            <div class="loadingRestos" v-if="loading">
-                <h1>LOADING...</h1>
+            <div class="spinner-container" v-if="loading">
+              <div class="spinner">
+                <loadModal/>
+              </div>
             </div>
             <div class="noFilterResults" v-if="!result">
                 <h3>No Restaurant Found.</h3>
@@ -41,6 +43,7 @@ import { mapActions , mapGetters } from 'vuex';
 import FilterBar from './FilterBar.vue';
 import RestaurantCard from './RestaurantCard.vue';
 import OperatingHourModal from './OperatingHourModal.vue';
+import loadModal from '@/components/loadModal'; 
 import M from 'materialize-css';
 
 /** DOM OBJECTS **/
@@ -53,7 +56,8 @@ export default {
     components: {
         FilterBar,
         RestaurantCard,
-        OperatingHourModal
+        OperatingHourModal,
+        loadModal
     }, 
     mounted () {
         M.AutoInit();
@@ -156,6 +160,18 @@ export default {
         width: 75vw; 
     }
     
+    .spinner-container {
+        width: 75vw; 
+        height: 30vh;  
+        display: flex;
+        align-items: center; 
+        justify-content: center;
+    }
+
+    .spinner {
+        vertical-align: middle;
+    }
+
     @media screen and (max-width: 990px) {
         .restaurantCards {
             width: 100vw; 
