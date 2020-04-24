@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="search-container">
         <div class="searched-text">
             <div v-if="search">
                 <h4 class="hide-on-med-and-down">"{{search}}" in Metro Manila</h4>
@@ -124,7 +124,6 @@ export default {
     }
 
     .main-content {
-        overflow-y:scroll;
         display:flex;
         padding-right: 3%;
         justify-content: center;

@@ -26,4 +26,7 @@ export default {
 <style>
   @import './assets/css/index.css'; 
   @import './assets/css/font.css'; 
+  html {
+    overflow-y:scroll;
+  }
 </style>
