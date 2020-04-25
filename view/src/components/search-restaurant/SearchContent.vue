@@ -90,8 +90,9 @@ export default {
         }
     },
     async created() {
-        await this.getPics(this.fetchSearchRestos());
-        await this.getOperatingHours(this.fetchSearchRestos());
+        await this.getRestos();
+        await this.getPics(this.fetchAllRestos());
+        await this.getOperatingHours(this.fetchAllRestos());
         this.loading = false;
     },
     methods: {
