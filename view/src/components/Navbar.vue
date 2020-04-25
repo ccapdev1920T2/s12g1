@@ -333,14 +333,14 @@ export default {
     },
     async goSearchResult() {
       this.clearFilter(); 
-      await this.getSearch(this.search);
-      await this.getSearchRestos(this.search);
       if (this.$router.name == "Search Result") {
-        await router.push({path: '/searchresult', query: {search : this.search}}).catch(() => {});
+        await this.getSearch(this.search);
+        await this.getSearchRestos(this.search);
+        router.push({path: '/searchresult', query: {search : this.search}}).catch(() => {});
         this.search = "";
       }
       else {
-        await router.push({path: '/searchresult', query: {search : this.search}}).catch(() => {});
+        router.push({path: '/searchresult', query: {search : this.search}}).catch(() => {});
         this.search = "";
       }
     },
