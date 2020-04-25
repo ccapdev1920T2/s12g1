@@ -68,16 +68,16 @@ export default {
     },
     computed: {
         search() {
-            return this.fetchSearch();
+            return (this.update || !this.update) ? this.fetchSearch() : this.fetchSearch();
         },
         result() {
-            if(this.fetchAllSearchRestos().length == 0)
+            if(this.fetchAllSearchRestos().length == 0 && (this.update || !this.update))
                 return false;
             else
                 return true;
         }, 
         unfilteredResults() {
-            if(this.fetchUnmodifiedRestos().length == 0)
+            if(this.fetchUnmodifiedRestos().length == 0 && (this.update || !this.update))
                 return false;
             else
                 return true;
@@ -92,6 +92,7 @@ export default {
     async created() {
         await this.getPics(this.fetchAllRestos());
         await this.getOperatingHours(this.fetchAllRestos());
+        this.update = !this.update; 
         this.loading = false;
     },
     methods: {
