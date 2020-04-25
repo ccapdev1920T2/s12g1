@@ -60,11 +60,14 @@ exports.get_search_restaurant_restoName = async (req, res) => {
     let results = [] 
     //Loop through each word of the search query, checking if it matches any words in the database 
     for(let i = 0; i < restoName.length; i++) {
-        await Restaurant.find({name: {$regex: restoName[i].trim(), $options: "i"}},(err, doc) => {
+        console.log("'" + restoName[i].trim() + "'"); 
+        await Restaurant.find({name: {$regex: restoName[i].trim(), $options: "i"}}, (err, doc) => {
             if(err) res.status(500) 
+            console.log(doc); 
             results.push(...doc);   
         });
     } 
+    // console.log(results);
     //Create a set containing all the results
     let unique = new Set(results.map(resto => JSON.stringify(resto))) 
     //Turn the set back into an array 
