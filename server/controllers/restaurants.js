@@ -60,7 +60,7 @@ exports.get_search_restaurant_restoName = async (req, res) => {
     let results = [] 
     //Loop through each word of the search query, checking if it matches any words in the database 
     for(let i = 0; i < restoName.length; i++) {
-        await Restaurant.find({name: {$regex: restoName[i], $options: "i"}},(err, doc) => {
+        await Restaurant.find({name: {$regex: restoName[i].trim(), $options: "i"}},(err, doc) => {
             if(err) res.status(500) 
             results.push(...doc);   
         });
