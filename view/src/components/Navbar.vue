@@ -333,8 +333,6 @@ export default {
     },
     async goSearchResult() {
       this.clearFilter(); 
-      await this.getSearchRestos(this.search);
-      await this.getSearch(this.search);
       if (this.$router.name == "Search Result") {
         await this.getSearch(this.search);
         await this.getSearchRestos(this.search);
