@@ -149,12 +149,9 @@ export default {
   methods: {
     ...mapActions(['removeUnusedPictures', 'getSearchRestos', 'getSearch']), 
     goSearchResult: async function() {
-      //TODO Search Router
       await this.getSearch(this.search);
       await this.getSearchRestos(this.search);
       await router.push({path: '/searchresult', query: {search : this.search}}).catch(() => {});
-      //For Dev
-      //router.push({name:"Display Restaurant", params : {id : "5e7f0b024e652b3734b7e7e2"}})
     },
     loadCards: async function() {
       //loads the restaurant cards in home 

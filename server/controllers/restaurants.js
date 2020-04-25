@@ -63,7 +63,6 @@ exports.get_search_restaurant_restoName = async (req, res) => {
         console.log("'" + restoName[i].trim() + "'"); 
         await Restaurant.find({name: {$regex: restoName[i].trim(), $options: "i"}}, (err, doc) => {
             if(err) res.status(500) 
-            console.log(doc); 
             results.push(...doc);   
         });
     } 

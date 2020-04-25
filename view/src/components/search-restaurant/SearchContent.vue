@@ -90,7 +90,6 @@ export default {
         }
     },
     async created() {
-        await this.getRestos();
         await this.getPics(this.fetchAllRestos());
         await this.getOperatingHours(this.fetchAllRestos());
         this.loading = false;
@@ -110,8 +109,8 @@ export default {
         },
         async goToSearch() {
             let key = null;
-            await this.getSearchRestos(key);
             await this.getSearch(key);
+            await this.getSearchRestos(key);
         },
     }
 }
