@@ -4,14 +4,14 @@ This project creates a database of restaurants wherein users can look up the res
 
 ## Getting Started
 
-1. Visit zarap.herokuapp.com
+1. Visit https://zarap.herokuapp.com/
 
 ### Test Cases
 
 ** Due to the generally slow performance of the mongoDB Atlas and Heroku App, loading files might take a while (as compared with having a local database)
 
 #### Test Case 1 (Unlogged User)
-1. Once you open the app at zarap.herokuapp.com , you will be greeted with the landing page. 
+1. Once you open the app at https://zarap.herokuapp.com/ , you will be greeted with the landing page. 
 
 ![alt text][1.1]
 
