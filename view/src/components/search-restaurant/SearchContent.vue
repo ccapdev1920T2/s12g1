@@ -87,6 +87,7 @@ export default {
         return {
             loading : true,
             currentRestaurantOperatingHours : null,
+            update: false
         }
     },
     async created() {
