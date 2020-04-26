@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 const state =  {
+    isLoading : false, //Flag if query is still loading (used in navbar)
     allRestos : [], //Store all the restos from the query
     currResto : null, //Store the resto the user clicked here 
     userReviewRestos : [], //Store the restos reviewed by the user 
@@ -44,6 +45,7 @@ const state =  {
 }
 
 const getters =  {
+    fetchIsLoading : state => state.isLoading, 
     fetchAllRestos : state => state.allRestos,
     fetchUnmodifiedRestos: state => state.unmodifiedSearchRestos, 
     fetchCurrResto : state => state.currResto, 
@@ -147,6 +149,7 @@ const actions =  {
 }
 
 const mutations = {
+    setIsLoading: (state, bool) => state.isLoading = bool, 
     setResto : (state, restos) => state.allRestos = restos,
     setCurrResto : (state, resto) => state.currResto = resto,
     setPics : (state, pic) => state.allPics = pic,

@@ -248,6 +248,9 @@
       @close="closeModal"
       class="bring_front"
     />
+    <div class="loadModal" v-if="loading">
+      <loadModal/>
+    </div>
 </div>
 </template>
 
@@ -256,10 +259,12 @@ import M from 'materialize-css';
 import router from '../router';
 import alertModal from '@/components/alertModal';
 import { mapActions, mapMutations, mapGetters } from 'vuex'; 
+import loadModal from '@/components/loadModal'; 
 export default {
   Name: "Navbar",
   components: {
-      alertModal
+      alertModal, 
+      loadModal
   },
   props:{
     hasSearch: Boolean, //If search bar is present 
@@ -287,7 +292,7 @@ export default {
   },
   methods: {
     ...mapGetters(["fetchFilters", "fetchSortToggles", "fetchCityToggles", "fetchCuisineToggles", "fetchEstToggles", "fetchCostToggles"]), 
-    ...mapMutations(["toggleFilterSort","toggleFilterCity","toggleFilterCuisine","toggleFilterCost","toggleFilterEst", "updateFilteredRestaurants","clearFilter"]),
+    ...mapMutations(["setIsLoading", "toggleFilterSort","toggleFilterCity","toggleFilterCuisine","toggleFilterCost","toggleFilterEst", "updateFilteredRestaurants","clearFilter"]),
     ...mapActions(['removeUnusedPictures', 'getSearchRestos', 'getSearch',"updateFilter"]),  
     showModal() { //confirmation of successful registration
         this.isModalVisible = true;
@@ -332,9 +337,11 @@ export default {
       router.push({name: 'Register'}).catch(() => {});
     },
     async goSearchResult() {
+      this.setIsLoading(true);
       this.clearFilter(); 
       await this.getSearch(this.search);
       await this.getSearchRestos(this.search);
+      this.setIsLoading(false); 
       if (this.$router.name == "Search Result") {
         router.push({path: '/searchresult', query: {search : this.search}}).catch(() => {});
         this.search = "";
@@ -415,6 +422,7 @@ export default {
   },
   data() {
     return {
+      loading : false, 
       user: null,
       isModalVisible: false,
       message: "You're logged out! Taking you back to home page....",

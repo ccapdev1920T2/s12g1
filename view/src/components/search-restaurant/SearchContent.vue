@@ -23,9 +23,9 @@
                 <RestaurantCard v-on:did_click_operating_info = "displayOperatingHoursModal" v-for="item in this.fetchAllSearchRestos()" :key="item.restaurantID" :resto="item"/>
             </div>
             <div class="spinner-container" v-if="loading">
-              <div class="spinner">
+                <div class="spinner">
                 <loadModal/>
-              </div>
+                </div>
             </div>
             <div class="noFilterResults" v-if="!result">
                 <h3>No Restaurant Found.</h3>
@@ -33,9 +33,13 @@
                 <a class="hyperlink" @click="goToSearch()">Search for another restaurant</a>
             </div>
         </div>
+        <div class="spinner" v-if="loadFromNav">
+            <loadModal/>
+        </div>
         <!-- Modal for Operating Hours-->
         <OperatingHourModal v-on:did_click_close = "closeOperatingInfoModal" id="operating-hour-modal" :operatingHour = "this.currentRestaurantOperatingHours" />  
     </div>
+    
 </template>
 
 <script>
@@ -81,6 +85,9 @@ export default {
                 return false;
             else
                 return true;
+        }, 
+        loadFromNav() {
+            return this.fetchIsLoading(); 
         }
     },
     data () {
@@ -98,7 +105,7 @@ export default {
     },
     methods: {
         ...mapActions(["getRestos", "getPics", "getOperatingHours", "getSearchRestos", "getSearch"]),
-        ...mapGetters(["fetchAllRestos", "fetchAllSearchRestos", "fetchSearch", "fetchUnmodifiedRestos"]),
+        ...mapGetters(["fetchIsLoading", "fetchAllRestos", "fetchAllSearchRestos", "fetchSearch", "fetchUnmodifiedRestos", "fetchIsloading"]),
         displayOperatingHoursModal (restaurantID) {
             // fetch the currentRestaurant opened and fetch its operating hours
             this.currentRestaurantOperatingHours =  restaurantID ? this.$store.getters.fetchOperatingHour(restaurantID)[0].operatingHours : null
