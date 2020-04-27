@@ -88,7 +88,6 @@ exports.upload_profile_pic = (req, res) => {
 exports.edit_review_pictures = (req, res) => {
     //Limit to 5 pictures to save to db 
     let upload = multer({ storage: storage, fileFilter: imageFilter }).array('photos', 5);
-
     upload(req, res, async function(err) {
          // req.files contains information of uploaded file
 
@@ -107,7 +106,7 @@ exports.edit_review_pictures = (req, res) => {
         //Create the picture objects to save to the db  
         let result = req.files
         //Assign the new urls to serve the images
-        result = result.map(obj => (({...obj, path : `images/${req.params.destination}/${obj.filename}`, pictureID: mongoose.Types.ObjectId()})));
+        result = result.map(obj => (({...obj, path : `images/${req.params.destination}/${obj.filename}`, pictureID: mongoose.Types.ObjectId()}))); 
         res.send(result);
     });
 }; 
@@ -139,7 +138,12 @@ exports.delete_existing_pictures = (req, res) => {
                     let relPath = doc.split('/');
                     let removePath = `images/${relPath[4]}/${relPath[5]}`;
                     fs.unlink(removePath, (err) => {
-                        if (err) throw err;
+                        if(err) {
+                            if (err.code == 'ENOENT') 
+                                console.log("File no longer Exists");
+                            else 
+                                throw err 
+                        }
                     });
                     await Picture.deleteOne({'pictureID' : reviewPics[i]}, (error, result) => {
                         if(error) throw error; 
@@ -174,10 +178,10 @@ exports.delete_unused_pictures = async (req, res) => {
     //Pass by pictures that are part of the existing review
     for(i = 0; i < urls.length && !found; i++) {
         await Picture.findOne({'url' : urls[i]}, (err, result) => {
-            if(result === null) {
+            if(result == null) {
                 found = true;
                 skip = i;      
-            }
+            } 
         }) 
     }
     // Delete unused pictures
@@ -196,6 +200,7 @@ exports.delete_unused_pictures = async (req, res) => {
                 console.log(`${removePath} was deleted because it was unused`);
         });
     }
+    urls.splice(skip, urls.length - skip - 1); 
     res.status(200).send(urls);
 }; 
 
@@ -205,27 +210,29 @@ exports.delete_unused_pictures = async (req, res) => {
 */
 exports.delete_unused_profile_picture = async (req, res) => {
     let url = req.body.urls;   
-    let found = false;   
+    let found = true;   
     //Check if the picture is inside the db 
-    await Picture.findOne({'url' : url.toString()}, (err, result) => {
-        if(result != null) {
-            found = true;
-        }
-    }) 
-    //If not, then delete the image in storage 
-    if(!found) {  
-        let relPath = url.split('/');
-        let removePath = `images/${relPath[4]}/${relPath[5]}`;
-        fs.unlink(removePath, (err) => {
-            if(err) {
-                if (err.code == 'ENOENT') 
-                    console.log("File no longer Exists");
-                else 
-                    throw err 
+    if(url != undefined) {
+        await Picture.findOne({'url' : url.toString()}, (err, result) => { 
+            if(result == null) {
+                found = false;
             }
-            else
-                console.log(`${removePath} was deleted because it was unused`);
-        });
+        }) 
+        //If not, then delete the image in storage 
+        if(!found) {  
+            let relPath = url.split('/');
+            let removePath = `images/${relPath[4]}/${relPath[5]}`;
+            fs.unlink(removePath, (err) => {
+                if(err) {
+                    if (err.code == 'ENOENT') 
+                        console.log("File no longer Exists");
+                    else 
+                        throw err 
+                }
+                else
+                    console.log(`${removePath} was deleted because it was unused profile`);
+            });
+        }
     }
     res.status(200).send(url);
 };

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="search-container">
         <div class="searched-text">
             <div v-if="search">
                 <h4 class="hide-on-med-and-down">"{{search}}" in Metro Manila</h4>
@@ -11,24 +11,35 @@
             </div>
         </div>
 
-        <div class="loading" v-show="!result">
+        <div class="loading" v-show="!unfilteredResults">
             <h3>No Restaurant Found.</h3>
             <br>
             <a class="hyperlink" @click="goToSearch()">Search for another restaurant</a>
         </div>
 
-        <div class="main-content" v-show="result">
+        <div class="main-content" v-show="unfilteredResults">
             <FilterBar />
-            <div v-if="!loading">
+            <div class="restaurantCards" v-if="!loading && result">
                 <RestaurantCard v-on:did_click_operating_info = "displayOperatingHoursModal" v-for="item in this.fetchAllSearchRestos()" :key="item.restaurantID" :resto="item"/>
             </div>
-            <div class="loadingRestos" v-if="loading">
-                <h1>LOADING...</h1>
+            <div class="spinner-container" v-if="loading">
+                <div class="spinner">
+                <loadModal/>
+                </div>
             </div>
+            <div class="noFilterResults" v-if="!result">
+                <h3>No Restaurant Found.</h3>
+                <br>
+                <a class="hyperlink" @click="goToSearch()">Search for another restaurant</a>
+            </div>
+        </div>
+        <div class="spinner" v-if="loadFromNav">
+            <loadModal/>
         </div>
         <!-- Modal for Operating Hours-->
         <OperatingHourModal v-on:did_click_close = "closeOperatingInfoModal" id="operating-hour-modal" :operatingHour = "this.currentRestaurantOperatingHours" />  
     </div>
+    
 </template>
 
 <script>
@@ -36,6 +47,7 @@ import { mapActions , mapGetters } from 'vuex';
 import FilterBar from './FilterBar.vue';
 import RestaurantCard from './RestaurantCard.vue';
 import OperatingHourModal from './OperatingHourModal.vue';
+import loadModal from '@/components/loadModal'; 
 import M from 'materialize-css';
 
 /** DOM OBJECTS **/
@@ -48,7 +60,8 @@ export default {
     components: {
         FilterBar,
         RestaurantCard,
-        OperatingHourModal
+        OperatingHourModal,
+        loadModal
     }, 
     mounted () {
         M.AutoInit();
@@ -59,31 +72,40 @@ export default {
     },
     computed: {
         search() {
-            return this.fetchSearch();
+            return (this.update || !this.update) ? this.fetchSearch() : this.fetchSearch();
         },
         result() {
-            if(this.fetchAllSearchRestos().length == 0)
+            if(this.fetchAllSearchRestos().length == 0 && (this.update || !this.update))
                 return false;
             else
                 return true;
+        }, 
+        unfilteredResults() {
+            if(this.fetchUnmodifiedRestos().length == 0 && (this.update || !this.update))
+                return false;
+            else
+                return true;
+        }, 
+        loadFromNav() {
+            return this.fetchIsLoading(); 
         }
     },
     data () {
         return {
             loading : true,
             currentRestaurantOperatingHours : null,
-
+            update: false
         }
     },
     async created() {
-        await this.getRestos();
         await this.getPics(this.fetchAllRestos());
         await this.getOperatingHours(this.fetchAllRestos());
+        this.update = !this.update; 
         this.loading = false;
     },
     methods: {
         ...mapActions(["getRestos", "getPics", "getOperatingHours", "getSearchRestos", "getSearch"]),
-        ...mapGetters(["fetchAllRestos", "fetchAllSearchRestos", "fetchSearch"]),
+        ...mapGetters(["fetchIsLoading", "fetchAllRestos", "fetchAllSearchRestos", "fetchSearch", "fetchUnmodifiedRestos", "fetchIsloading"]),
         displayOperatingHoursModal (restaurantID) {
             // fetch the currentRestaurant opened and fetch its operating hours
             this.currentRestaurantOperatingHours =  restaurantID ? this.$store.getters.fetchOperatingHour(restaurantID)[0].operatingHours : null
@@ -96,8 +118,8 @@ export default {
         },
         async goToSearch() {
             let key = null;
-            await this.getSearchRestos(key);
             await this.getSearch(key);
+            await this.getSearchRestos(key);
         },
     }
 }
@@ -127,10 +149,40 @@ export default {
       justify-content: center;
       height: 100vh;
     }
-    
+
+    .noFilterResults {
+        width: 75vw; 
+        text-align: center; 
+        padding: 20px;
+        padding-left: 0px; 
+    }
+
     .loadingRestos {
         width: 75vw; 
         text-align: center; 
-        padding: 20px; 
+        padding: 20px;
+        padding-left: 0px; 
+    }
+
+    .restaurantCards {
+        width: 75vw; 
+    }
+    
+    .spinner-container {
+        width: 75vw; 
+        height: 30vh;  
+        display: flex;
+        align-items: center; 
+        justify-content: center;
+    }
+
+    .spinner {
+        vertical-align: middle;
+    }
+
+    @media screen and (max-width: 990px) {
+        .restaurantCards {
+            width: 100vw; 
+        }
     }
 </style>

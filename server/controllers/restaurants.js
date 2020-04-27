@@ -52,19 +52,32 @@ function escapeStringForRegex(string) {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 }
 
+async function find (restoName) {
+    //Loop through each word of the search query, checking if it matches any words in the database
+    const final = await new Promise(async (resolve, reject) => {
+        let results = [];
+        for(let i = 0; i < restoName.length; i++) {
+            let query = { name: { $regex: restoName[i].trim(), $options: "i" } };
+            try {
+               let doc = await Restaurant.find(query) 
+               results.push(...doc);
+            } catch(err) {
+                console.log(err)
+            } 
+        }
+        resolve(results);
+    })
+  
+    return final;
+}
+
 //Get Restaurant based on search key
 exports.get_search_restaurant_restoName = async (req, res) => {
     let restoName = escapeStringForRegex(req.params.restoName);
     let search = escapeStringForRegex(req.params.restoName); //Store the unmodified search query 
     restoName = restoName.split(" ") //Split the search query 
-    let results = [] 
-    //Loop through each word of the search query, checking if it matches any words in the database 
-    for(let i = 0; i < restoName.length; i++) {
-        await Restaurant.find({name: {$regex: restoName[i], $options: "i"}},(err, doc) => {
-            if(err) res.status(500) 
-            results.push(...doc);   
-        });
-    } 
+    let results = await find(restoName); 
+    // console.log(results);
     //Create a set containing all the results
     let unique = new Set(results.map(resto => JSON.stringify(resto))) 
     //Turn the set back into an array 
@@ -81,12 +94,11 @@ exports.get_search_restaurant_restoName = async (req, res) => {
         return Object.assign({}, restaurant, {matchedChars : matchedChars})
     }); 
     //Remove restaurants that didn't match enough chars 
-    //Threshold value is 40% of the length of the reso name  
     unique = unique.filter((restaurant) => {
         let trimmedName = restaurant.name.replace(/\s+/g, '')
-        return (restaurant.matchedChars >= (trimmedName.length * 0.4)) ? true : false
+        return (restaurant.matchedChars >= 2) ? true : false
     })
     //Sort the items based on matchedChars (descending) (i.e. more matched chars are at the front)
     unique.sort((a,b) => (a.matchedChars >= b.matchedChars) ? -1 : 1) 
-    res.status(200).send(unique); 
+    res.status(200).send(unique);    
 }

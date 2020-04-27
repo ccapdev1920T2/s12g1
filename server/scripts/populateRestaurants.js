@@ -52,26 +52,26 @@ var restaurantEst = [
 ]
 
 var restaurantCity = [ 
-    "Binondo, Manila",
-    "Ermita",
-    "Malate, Manila",
-    "Binondo, Manila",
-    "Glorietta, Glorietta Complex",
-    "Greenhills, San Juan City",
-    "Crossroads Building, Bonifacio Global City",
-    "Robinsons Place Manila, Ermita",
-    "Quiapo, Manila",
-    "Sampaloc, Manila",
-    "Glorietta, Glorietta Complex",
-    "Malate, Manila",
-    "Tondo, Manila",
-    "Bonifacio Global City",
-    "Binondo, Manila",
-    "Entertainment Mall, SM Mall of Asia, Mall of Asia Complex (MOA)",
-    "Bagong Pag-Asa, Manila",
-    "Ermita, Manila",
-    "SM by the Bay, SM Mall of Asia, Mall of Asia Complex (MOA)",
-    "Sampaloc, Manila"
+    "Manila",
+    "Manila",
+    "Manila",
+    "Manila",
+    "Makati",
+    "San Juan",
+    "Taguig",
+    "Manila",
+    "Manila",
+    "Manila",
+    "Makati",
+    "Manila",
+    "Manila",
+    "Taguig",
+    "Manila",
+    "Pasay",
+    "Manila",
+    "Manila",
+    "Pasay",
+    "Manila"
 ]
 
 var restaurantAddress = [ 
@@ -124,7 +124,7 @@ var restaurantCuisines = [
     "Chinese",
     "Seafood, Chinese",
     "Coffee, Desserts",
-    "Taiwanese, Chinese",
+    "Chinese",
     "Japanese",
     "Chinese",
     "American",
@@ -135,11 +135,11 @@ var restaurantCuisines = [
     "Korean, Korean BBQ",
     "Filipino",
     "Coffee, Desserts",
-    "Japanese, Sushi",
-    "Japanese, Grill",
+    "Japanese",
+    "Japanese",
     "Japanese",
     "American",
-    "Seafood, Filipino, Asian, European",
+    "Seafood, Filipino, Asian",
     "Pizza"
 ]
 
@@ -246,7 +246,7 @@ async function populateRestaurants(userCount, limit) {
     var i;
     let doc = await loadUsers();
     let doc_2 = await loadPictures();
-
+    
     for(i = userCount; i < limit; i++) {
         let resto = new Restaurant ({
             restaurantID: mongoose.Types.ObjectId(),

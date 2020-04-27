@@ -75,7 +75,7 @@
                 </div>
                 <div class="row">
                     <div class="col s1">
-                    <div class="info-font white-text pad-right-text"><pre class="remove-margin">Password:   </pre></div>
+                    <div class="info-font white-text pad-right-text"><pre class="remove-margin">New Password:   </pre></div>
                     </div>
                     <div class="col s8 offset-s2">
                     <input type="text" class="text white padinput" v-model="user.password">
@@ -150,7 +150,7 @@
                 </div>
                 <div class="row">
                     <div class="col s12">
-                    <div class="info-font white-text pad-right-text"><pre class="remove-margin">Password:   </pre></div>
+                    <div class="info-font white-text pad-right-text"><pre class="remove-margin">New Password:   </pre></div>
                     </div>
                     <div class="col s11">
                     <input type="text" class="text white padinput" v-model="user.password">
@@ -180,6 +180,7 @@
                     />
                 </div>
             </div>
+            <loadModal v-show="isLoading"/>
         </div>
     </div>
 </template>
@@ -189,12 +190,14 @@ import axios from 'axios';
 import {mapGetters, mapActions, mapMutations} from 'vuex'; 
 import ImageUpload from '@/components/ImageUpload'; 
 import alertModal from '@/components/alertModal';
+import loadModal from '@/components/loadModal.vue';
 
 export default {
     name: "ProfilePage",
     components: {
         ImageUpload,
-        alertModal
+        alertModal,
+        loadModal
     },
     data() {
         return {
@@ -207,6 +210,7 @@ export default {
             user: {
                 name : ' ',
                 address: ' ',
+                password: ' ',
                 email: ' ',
                 points: ' '
             },
@@ -223,7 +227,8 @@ export default {
             },
             profilePictures: "profilePictures",
             isLogged: false,
-            isMine: false
+            isMine: false,
+            isLoading: false
         }
     },
     computed: {
@@ -247,7 +252,7 @@ export default {
         }
     },
     methods: {
-       ...mapActions(['removeUnusedPictures']),
+       ...mapActions(['removeUnusedProfilePic']),
        ...mapGetters(['fetchUploadedPics','getUser']),
        ...mapMutations(['setUploadedPics']),
        async verifyOwn() {
@@ -262,14 +267,14 @@ export default {
                     this.isMine = true;
                 }
                 else{
-                    await axios.get(`http://localhost:9090/users/${this.$route.params.id}`)
+                    await axios.get(`/users/${this.$route.params.id}`)
                     .then(resp => {
                         this.user = resp.data.user[0]
                     })
                 }
            }
            else {        
-               await axios.get(`http://localhost:9090/users/${this.$route.params.id}`)
+               await axios.get(`/users/${this.$route.params.id}`)
                .then(resp => {
                    this.user = resp.data.user[0]
                })
@@ -280,12 +285,14 @@ export default {
             this.tempUser.last = this.user_lastname
         },
         async toggleView() {
+            this.isLoading = true;
             this.update = true; 
             this.visible = !this.visible;
             this.editProfileVisible = !this.editProfileVisible;
-            await this.removeUnusedPictures();
+            await this.removeUnusedProfilePic(this.fetchUploadedPics()[0]);
             this.setUploadedPics([this.user_picture]); 
             this.$refs.uploadSection.reset(true, [this.user_picture]); 
+            this.isLoading = false;
             this.onResize();
         },
         showModal() { //confirmation of successful update
@@ -301,9 +308,10 @@ export default {
             this.editProfileVisible = true;
             this.bigEditProfileVisible = true;
             this.smallEditProfileVisible = true;
+            this.user.password = '';
             this.confirm_password = '';
             this.errors = [];
-            await this.removeUnusedPictures(); 
+            await this.removeUnusedProfilePic(this.fetchUploadedPics()[0]); 
             this.setUploadedPics([this.user_picture]);
             if(this.$refs.uploadSection != undefined) 
             this.$refs.uploadSection.reset(true, [this.user_picture]); 
@@ -323,6 +331,7 @@ export default {
             this.submitVisible = value
         },
         async updateUser() {
+            this.isLoading = true;
             let app = this; 
             await this.$store
                 .dispatch('updateUser', {
@@ -345,6 +354,7 @@ export default {
                     this.setUploadedPics([this.user_picture]);
                     this.$refs.uploadSection.reset(true, [this.user_picture]); 
                     this.update = true;
+                    this.isLoading = false;
                 });
         },
         validateForm: async function () {
@@ -378,12 +388,13 @@ export default {
                 return true;
             }
             else{
-                await this.removeUnusedPictures();
+                await this.removeUnusedProfilePic(this.fetchUploadedPics()[0]);
                 this.setUploadedPics([this.user_picture]);
                 this.$refs.uploadSection.reset(true, [this.user_picture]);
                 this.user = Object.assign({}, this.tempUser.user);
                 this.user_firstname = this.tempUser.first
                 this.user_lastname = this.tempUser.last
+                this.user.password = '';
                 this.confirm_password = '';
             } 
             this.update = false;       
@@ -397,7 +408,7 @@ export default {
     async created () {
         //Removes unused pictures when window is closed 
         window.addEventListener('beforeunload', async () => {
-            await this.removeUnusedPictures(); 
+            await this.removeUnusedProfilePic(this.fetchUploadedPics()[0]); 
         }, false)
     }  
 }

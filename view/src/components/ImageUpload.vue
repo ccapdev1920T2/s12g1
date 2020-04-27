@@ -54,7 +54,8 @@ import { mapGetters, mapActions, mapMutations} from 'vuex';
 import axios from 'axios';
 import PictureModal from '@/components/PictureModal'; 
 const STATUS_INITIAL = 0, STATUS_SAVING = 1, STATUS_SUCCESS = 2, STATUS_FAILED = 3;
-const UPLOAD_ROUTE="http://localhost:9090/pictures/edit-review-pics"; 
+// const UPLOAD_ROUTE="/pictures/edit-review-pics"; 
+const UPLOAD_ROUTE="/pictures/edit-review-pics"; 
 export default {
     name: "ImageUpload",
     components: {
@@ -122,7 +123,7 @@ export default {
             //set the data 
             .then(res => res.data)
             .then(res => res.map(img => Object.assign({}, 
-                img, { url: `http://localhost:9090/static/${this.dest}/${img.filename}` })))
+                img, { url: `https://zarap.herokuapp.com/static/${this.dest}/${img.filename}` })))
             .catch(err => {
               this.uploadError = err;
               this.currentStatus = STATUS_FAILED;
@@ -130,17 +131,17 @@ export default {
       },
       //Calls the server to save the pictures 
       save(formData) {
-        this.currentStatus = STATUS_SAVING;  
+        this.currentStatus = STATUS_SAVING;   
         this.upload(formData)
           .then(x => { 
             let urls = x.map((item) => item.url);  
             this.addUploadedPics(urls); 
             this.currentStatus = STATUS_SUCCESS;
           })
-          .catch(err => {
-            console.log(err); 
+          .catch(err => { 
             this.uploadError = "Server error in saving picture.";
             this.currentStatus = STATUS_FAILED;
+            throw err; 
           });
       },
       //Gets the pictures in the form 

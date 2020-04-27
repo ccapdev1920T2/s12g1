@@ -7,6 +7,16 @@
 <script>
 import M from 'materialize-css';
 export default {
+  name: "App",
+  watch: {
+      $route: {
+          immediate: true,
+          handler(to, from) {
+              document.title = from; 
+              document.title = to.meta.title || 'Razap';
+          }
+      },
+  },
   mounted() {
     M.AutoInit();
   }
@@ -16,4 +26,7 @@ export default {
 <style>
   @import './assets/css/index.css'; 
   @import './assets/css/font.css'; 
+  html {
+    overflow-y:scroll;
+  }
 </style>

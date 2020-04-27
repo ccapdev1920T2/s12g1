@@ -14,44 +14,54 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    meta: { title: 'Home' }
   },
   {
     path: '/restaurant/:id', 
     name: 'Display Restaurant', 
-    component: DisplayRestaurant
+    component: DisplayRestaurant,
+    meta: { title: 'Restaurant Page' }
   },
   {
     path: '/searchresult',
     name: 'Search Result',
-    component: SearchResult
+    component: SearchResult,
+    meta: { title: 'Search Result' }
   },
   {
     path: '/login', 
     name: 'Login', 
-    component: Login
+    component: Login,
+    meta: { title: 'Login' }
   },
   {
     path: '/register', 
     name: 'Register', 
-    component: Register
+    component: Register,
+    meta: { title: 'Register' }
   },
   {
     path: '/userdetail/:id/:menu', 
     name: 'UserDetail', 
-    component: UserDetail
+    component: UserDetail,
+    meta: { title: 'User Detail' }
   },
   {
     path: '/about', 
     name: 'About', 
-    component: About 
+    component: About,
+    meta: { title: 'About' } 
   }
 ]
 
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes
+  routes,
+  scrollBehavior () {
+    return { x: 0, y: 0 }
+  }
 })
 
 export default router
