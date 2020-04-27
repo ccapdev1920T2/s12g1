@@ -45,7 +45,7 @@ app.use(session({
 
 const userRouter = require('./routes/userRouter');
 const reviewRouter = require('./routes/reviewsRouter');
-const populateRouter = require('./routes/populateRouter');
+// const populateRouter = require('./routes/populateRouter');
 const pictureRouter = require('./routes/picturesRouter');
 const restaurantRouter = require('./routes/restaurantsRouter'); 
 // Routes
@@ -54,7 +54,7 @@ app.use('/reviews', reviewRouter);
 app.use('/pictures', pictureRouter);
 app.use('/restaurants', restaurantRouter); 
 // Populates the database tables
-app.use('/populate', populateRouter);
+// app.use('/populate', populateRouter);
 
 
 app.use(express.static(__dirname + '/public'));

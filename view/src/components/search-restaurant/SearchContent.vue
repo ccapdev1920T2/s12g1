@@ -13,8 +13,6 @@
 
         <div class="loading" v-show="!unfilteredResults">
             <h3>No Restaurant Found.</h3>
-            <br>
-            <a class="hyperlink" @click="goToSearch()">Search for another restaurant</a>
         </div>
 
         <div class="main-content" v-show="unfilteredResults">
@@ -29,8 +27,6 @@
             </div>
             <div class="noFilterResults" v-if="!result">
                 <h3>No Restaurant Found.</h3>
-                <br>
-                <a class="hyperlink" @click="goToSearch()">Search for another restaurant</a>
             </div>
         </div>
         <div class="spinner" v-if="loadFromNav">
